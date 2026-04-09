@@ -1,0 +1,229 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "🏠 MIREI Root"
+    },
+    {
+      "path": "backend",
+      "name": "🚀 Backend Server"
+    },
+    {
+      "path": "frontend",
+      "name": "🎨 Frontend React"
+    },
+    {
+      "path": "ai-core",
+      "name": "🧠 AI Core System"
+    },
+    {
+      "path": "infrastructure",
+      "name": "☁️ Infrastructure"
+    },
+    {
+      "path": "database",
+      "name": "💾 Database"
+    },
+    {
+      "path": "scripts",
+      "name": "🔧 Scripts"
+    },
+    {
+      "path": "docs",
+      "name": "📚 Documentation"
+    }
+  ],
+  
+  "settings": {
+    // Editor settings untuk semua folder
+    "editor.fontSize": 14,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    
+    // Terminal settings
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    
+    // File explorer settings
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.git": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/coverage": true,
+      "**/logs": true,
+      "**/temp": true
+    },
+    
+    // Search settings
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/coverage": true,
+      "**/logs": true,
+      "**/*.log": true
+    },
+    
+    // Language specific
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    
+    // Git settings
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    
+    // Testing
+    "jest.autoRun": {
+      "watch": false,
+      "onSave": "test-file"
+    }
+  },
+  
+  "extensions": {
+    "recommendations": [
+      // Wajib untuk project ini
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-typescript-next",
+      
+      // Untuk backend
+      "rangav.vscode-thunder-client",
+      "ms-azuretools.vscode-docker",
+      
+      // Untuk frontend
+      "dsznajder.es7-react-js-snippets",
+      "bradlc.vscode-tailwindcss",
+      
+      // Untuk database
+      "firebase.vscode-firebase",
+      "mtxr.sqltools",
+      
+      // Utilitas
+      "eamodio.gitlens",
+      "github.vscode-pull-request-github",
+      "streetsidesoftware.code-spell-checker",
+      "wix.vscode-import-cost",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense"
+    ],
+    "unwantedRecommendations": []
+  },
+  
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Backend",
+        "cwd": "${workspaceFolder:🚀 Backend Server}",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["run", "dev"],
+        "skipFiles": ["<node_internals>/**"],
+        "envFile": "${workspaceFolder:🚀 Backend Server}/.env"
+      },
+      {
+        "type": "chrome",
+        "request": "launch",
+        "name": "Launch Frontend",
+        "url": "http://localhost:3000",
+        "webRoot": "${workspaceFolder:🎨 Frontend React}/src",
+        "sourceMapPathOverrides": {
+          "webpack:///src/*": "${webRoot}/*"
+        }
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug AI Core",
+        "cwd": "${workspaceFolder:🧠 AI Core System}",
+        "program": "${workspaceFolder:🧠 AI Core System}/index.js",
+        "envFile": "${workspaceFolder}/.env"
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Debug All (Backend + Frontend)",
+        "configurations": ["Launch Backend", "Launch Frontend"]
+      }
+    ]
+  },
+  
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Start Backend Dev",
+        "type": "shell",
+        "command": "npm run dev",
+        "options": {
+          "cwd": "${workspaceFolder:🚀 Backend Server}"
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Start Frontend Dev",
+        "type": "shell",
+        "command": "npm start",
+        "options": {
+          "cwd": "${workspaceFolder:🎨 Frontend React}"
+        },
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "Switch to Alpha Phase",
+        "type": "shell",
+        "command": "npm run phase:alpha",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "group": "none"
+      },
+      {
+        "label": "Switch to Beta Phase",
+        "type": "shell",
+        "command": "npm run phase:beta",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "group": "none"
+      },
+      {
+        "label": "Switch to Nexus Phase",
+        "type": "shell",
+        "command": "npm run phase:nexus",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "group": "none"
+      },
+      {
+        "label": "Run All Tests",
+        "type": "shell",
+        "command": "npm test",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "group": "test",
+        "problemMatcher": []
+      }
+    ]
+  }
+}
