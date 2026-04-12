@@ -1,0 +1,158 @@
+/* SettingsPage Styles */
+
+.settings-page-wrap {
+  @apply h-full overflow-y-auto flex flex-col gap-6;
+  padding: 32px 36px;
+}
+
+.settings-page-title {
+  @apply text-2xl font-bold mb-1;
+  color: var(--t1);
+}
+
+.settings-page-sub {
+  @apply text-[13px];
+  color: var(--t3);
+}
+
+/* Section Card */
+.settings-section-card {
+  @apply rounded-2xl overflow-hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.4s ease both;
+}
+
+.settings-section-head {
+  @apply flex items-center gap-[10px];
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-section-icon {
+  @apply text-lg;
+}
+
+.settings-section-title {
+  @apply text-[14px] font-semibold;
+  color: var(--t1);
+}
+
+.settings-section-title-danger {
+  color: #ef4444;
+}
+
+/* Setting Row */
+.settings-row {
+  @apply flex items-center gap-4;
+  padding: 14px 20px;
+}
+
+.settings-row-border {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-label {
+  @apply text-[13.5px] font-medium mb-[2px];
+  color: var(--t1);
+}
+
+.settings-sub {
+  @apply text-[11.5px];
+  color: var(--t3);
+}
+
+/* Toggle Switch */
+.settings-toggle {
+  @apply w-[42px] h-6 rounded-full border-none cursor-pointer relative flex-shrink-0;
+  transition: all 0.25s ease;
+}
+
+.settings-toggle-active {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+.settings-toggle-inactive {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-toggle-knob {
+  @apply w-[18px] h-[18px] rounded-full bg-white absolute top-[3px];
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: left 0.25s ease;
+}
+
+.settings-toggle-knob-active {
+  left: 21px;
+}
+
+.settings-toggle-knob-inactive {
+  left: 3px;
+}
+
+/* Select */
+.settings-select {
+  @apply rounded-lg text-[12.5px] outline-none cursor-pointer;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Sora', sans-serif;
+  color: var(--t2);
+}
+
+.settings-select:focus {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Danger Zone */
+.settings-danger-btn {
+  @apply rounded-[10px] text-[13px] cursor-pointer text-left;
+  padding: 11px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t2);
+  font-family: 'Sora', sans-serif;
+  transition: all 0.15s ease;
+}
+
+.settings-danger-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.settings-danger-btn-critical {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.settings-danger-btn-critical:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+/* Info Row */
+.settings-info-row {
+  @apply flex justify-between;
+  padding: 4px 0 16px;
+}
+
+.settings-info-text {
+  @apply text-[12px];
+  color: var(--t3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-page-wrap {
+    padding: 24px 20px;
+  }
+  
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
