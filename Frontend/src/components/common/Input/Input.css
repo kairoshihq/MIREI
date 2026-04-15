@@ -1,0 +1,20 @@
+/* components/common/Input/Input.css */
+
+.common-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  color: var(--t1);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 8px 14px;
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  width: 100%;
+}
+.common-input::placeholder { color: var(--t3); }
+.common-input:focus {
+  border-color: rgba(139,92,246,0.5);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+}
+.common-input:disabled { opacity: 0.4; cursor: not-allowed; }

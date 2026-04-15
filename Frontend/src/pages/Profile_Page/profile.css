@@ -1,18 +1,28 @@
 /* ProfilePage Styles */
 
 .profile-page-wrap {
-  @apply h-full overflow-y-auto flex flex-col gap-7;
-  padding: 32px 36px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  height: 100%;
+  min-height: 0;
+  padding: 48px 36px 80px;
+  box-sizing: border-box;
 }
 
 /* Hero Card */
 .profile-hero-card {
   @apply relative rounded-[20px] overflow-hidden;
-  padding: 32px;
+  padding: 48px 32px;
+  margin-top: 16px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   animation: slideUp 0.4s ease;
+  display: flex;
+  align-items: center;
+  min-height: 180px;
 }
 
 .profile-hero-bg {
@@ -25,7 +35,7 @@
 }
 
 .profile-avatar-wrap {
-  @apply relative inline-block mb-4;
+  @apply relative inline-block;
 }
 
 .profile-big-avatar {
