@@ -1,4 +1,8 @@
 /* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import './variables.css';
 @import './themes/light.css';
 /* @import './themes/dark.css'; */ /* Aktifkan kalau pakai dark mode */

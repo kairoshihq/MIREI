@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { CohereClient } = require('cohere-ai');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP } = require('./controllers/authController');
 
 dotenv.config();
 
@@ -214,6 +215,12 @@ const sessions = new Map();
 // ========================================
 // ROUTES
 // ========================================
+
+// Auth routes
+app.post('/api/auth/register', handleRegister);
+app.post('/api/auth/verify-otp', handleVerifyOTP);
+app.post('/api/auth/login', handleLogin);
+app.post('/api/auth/resend-otp', handleResendOTP);
 
 // Route: Home
 app.get('/', (req, res) => {
