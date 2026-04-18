@@ -54,4 +54,9 @@ async function handleResendOTP(req, res) {
   }
 }
 
-module.exports = { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP };
+// GET /api/auth/me — validasi token & return user info
+function handleMe(req, res) {
+  res.json({ success: true, user: req.user });
+}
+
+module.exports = { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP, handleMe };

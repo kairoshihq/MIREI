@@ -2,19 +2,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const { dbRun, dbGet, dbInsert } = require('../config/database');
 
-// ── In-memory stores ──────────────────────────────────────────────
-const users = new Map();
-const otpStore = new Map();
-
-// ── Transporter (lazy init agar dotenv sudah terbaca) ─────────────
+// ── Email transporter ─────────────────────────────────────────────
 function getTransporter() {
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    family: 4,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    tls: { rejectUnauthorized: false },
   });
 }
 
@@ -23,11 +24,14 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-function generateToken(email) {
-  return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+function generateToken(userId, email) {
+  return jwt.sign(
+    { userId, email },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
 }
 
-// ── Send OTP email ────────────────────────────────────────────────
 async function sendOTPEmail(email, otp) {
   const transporter = getTransporter();
   await transporter.sendMail({
@@ -49,15 +53,23 @@ async function sendOTPEmail(email, otp) {
 
 // ── Register ──────────────────────────────────────────────────────
 async function register(email, password, username) {
-  if (users.has(email)) {
-    throw new Error('Email sudah terdaftar');
-  }
+  const existing = dbGet('SELECT id FROM users WHERE email = ?', [email]);
+  if (existing) throw new Error('Email sudah terdaftar');
 
   const passwordHash = await bcrypt.hash(password, 10);
-  users.set(email, { email, passwordHash, username, isVerified: false });
+
+  // Simpan user belum verified, kirim OTP
+  const id = dbInsert(
+    'INSERT INTO users (email, username, password, verified) VALUES (?, ?, ?, 0)',
+    [email, username, passwordHash]
+  );
 
   const otp = generateOTP();
-  otpStore.set(email, { code: otp, expiresAt: Date.now() + 10 * 60 * 1000 });
+  const expiresAt = Date.now() + 10 * 60 * 1000;
+  dbRun(
+    'INSERT OR REPLACE INTO otp_codes (email, code, expires_at) VALUES (?, ?, ?)',
+    [email, otp, expiresAt]
+  );
 
   await sendOTPEmail(email, otp);
   return { message: 'OTP telah dikirim ke email kamu' };
@@ -65,40 +77,54 @@ async function register(email, password, username) {
 
 // ── Verify OTP ────────────────────────────────────────────────────
 function verifyOTP(email, code) {
-  const stored = otpStore.get(email);
+  const stored = dbGet('SELECT * FROM otp_codes WHERE email = ?', [email]);
   if (!stored) throw new Error('OTP tidak ditemukan, daftar ulang');
-  if (Date.now() > stored.expiresAt) throw new Error('OTP sudah kadaluarsa');
+  if (Date.now() > stored.expires_at) {
+    dbRun('DELETE FROM otp_codes WHERE email = ?', [email]);
+    throw new Error('OTP sudah kadaluarsa');
+  }
   if (stored.code !== code) throw new Error('Kode OTP salah');
 
-  const user = users.get(email);
-  user.isVerified = true;
-  otpStore.delete(email);
+  dbRun('UPDATE users SET verified = 1 WHERE email = ?', [email]);
+  dbRun('DELETE FROM otp_codes WHERE email = ?', [email]);
 
-  const token = generateToken(email);
-  return { token, user: { email: user.email, username: user.username } };
+  const user = dbGet('SELECT id, email, username, created_at FROM users WHERE email = ?', [email]);
+  const token = generateToken(user.id, user.email);
+  return { token, user: { id: user.id, email: user.email, username: user.username, created_at: user.created_at } };
 }
 
 // ── Login ─────────────────────────────────────────────────────────
 async function login(email, password) {
-  const user = users.get(email);
+  const user = dbGet('SELECT * FROM users WHERE email = ?', [email]);
   if (!user) throw new Error('Email tidak terdaftar');
-  if (!user.isVerified) throw new Error('Email belum diverifikasi');
+  if (!user.verified) throw new Error('Email belum diverifikasi, cek inbox kamu');
 
-  const valid = await bcrypt.compare(password, user.passwordHash);
+  const valid = await bcrypt.compare(password, user.password);
   if (!valid) throw new Error('Password salah');
 
-  const token = generateToken(email);
-  return { token, user: { email: user.email, username: user.username } };
+  const token = generateToken(user.id, user.email);
+  return { token, user: { id: user.id, email: user.email, username: user.username, created_at: user.created_at } };
 }
 
 // ── Resend OTP ────────────────────────────────────────────────────
 async function resendOTP(email) {
-  if (!users.has(email)) throw new Error('Email tidak terdaftar');
+  const user = dbGet('SELECT id FROM users WHERE email = ?', [email]);
+  if (!user) throw new Error('Email tidak terdaftar');
 
   const otp = generateOTP();
-  otpStore.set(email, { code: otp, expiresAt: Date.now() + 10 * 60 * 1000 });
+  const expiresAt = Date.now() + 10 * 60 * 1000;
+  dbRun(
+    'INSERT OR REPLACE INTO otp_codes (email, code, expires_at) VALUES (?, ?, ?)',
+    [email, otp, expiresAt]
+  );
+
   await sendOTPEmail(email, otp);
   return { message: 'OTP baru telah dikirim' };
 }
 
-module.exports = { register, verifyOTP, login, resendOTP };
+// ── Get user by ID (untuk middleware) ────────────────────────────
+function getUserById(id) {
+  return dbGet('SELECT id, email, username FROM users WHERE id = ?', [id]);
+}
+
+module.exports = { register, verifyOTP, login, resendOTP, getUserById };

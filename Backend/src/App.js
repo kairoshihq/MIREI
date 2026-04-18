@@ -5,7 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const { CohereClient } = require('cohere-ai');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP } = require('./controllers/authController');
+const { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP, handleMe } = require('./controllers/authController');
+const authMiddleware = require('./middleware/auth');
+const { initDatabase } = require('./config/database');
 
 dotenv.config();
 
@@ -221,6 +223,30 @@ app.post('/api/auth/register', handleRegister);
 app.post('/api/auth/verify-otp', handleVerifyOTP);
 app.post('/api/auth/login', handleLogin);
 app.post('/api/auth/resend-otp', handleResendOTP);
+app.get('/api/auth/me', authMiddleware, handleMe);
+
+// PUT /api/auth/password — ubah password
+app.put('/api/auth/password', authMiddleware, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, error: 'Password lama dan baru wajib diisi' });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ success: false, error: 'Password baru minimal 6 karakter' });
+        }
+        const bcrypt = require('bcryptjs');
+        const { dbGet, dbRun } = require('./config/database');
+        const user = dbGet('SELECT * FROM users WHERE id = ?', [req.user.id]);
+        const valid = await bcrypt.compare(currentPassword, user.password);
+        if (!valid) return res.status(400).json({ success: false, error: 'Password lama salah' });
+        const newHash = await bcrypt.hash(newPassword, 10);
+        dbRun('UPDATE users SET password = ? WHERE id = ?', [newHash, req.user.id]);
+        res.json({ success: true, message: 'Password berhasil diubah' });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
 
 // Route: Home
 app.get('/', (req, res) => {
@@ -265,9 +291,20 @@ app.get('/api/personality', (req, res) => {
 
 // Route: Chat dengan MIREI
 app.post('/api/chat', async (req, res) => {
-    const { message } = req.body;
-    let sessionId = req.headers['x-session-id'];
-    
+    const { message, sessionId: bodySessionId } = req.body;
+    let sessionId = req.headers['x-session-id'] || bodySessionId;
+
+    // Cek user login dari token (opsional)
+    let userId = null;
+    const authHeader = req.headers['authorization'];
+    if (authHeader) {
+        try {
+            const jwt = require('jsonwebtoken');
+            const decoded = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+            userId = decoded.userId;
+        } catch (_) {}
+    }
+
     if (!message || message.trim().length === 0) {
         return res.status(400).json({ 
             success: false, 
@@ -362,6 +399,31 @@ app.post('/api/chat', async (req, res) => {
         
         history.push({ role: 'CHATBOT', content: aiMessage });
         sessions.set(sessionId, history);
+
+        // Simpan ke DB jika user login
+        if (userId) {
+            try {
+                const { dbGet, dbRun, dbInsert } = require('./config/database');
+                const now = new Date().toISOString();
+                let dbSession = dbGet('SELECT id FROM chat_sessions WHERE id = ?', [sessionId]);
+                if (!dbSession) {
+                    const title = message.length > 40 ? message.slice(0, 40) + '...' : message;
+                    dbInsert(
+                        'INSERT INTO chat_sessions (id, user_id, title, preview, message_count, created_at, updated_at) VALUES (?, ?, ?, ?, 0, ?, ?)',
+                        [sessionId, userId, title, message, now, now]
+                    );
+                }
+                dbInsert('INSERT INTO messages (conversation_id, role, content, timestamp) VALUES (?, ?, ?, ?)', [sessionId, 'user', message, now]);
+                dbInsert('INSERT INTO messages (conversation_id, role, content, timestamp) VALUES (?, ?, ?, ?)', [sessionId, 'assistant', aiMessage, now]);
+                const countRow = dbGet('SELECT COUNT(*) as cnt FROM messages WHERE conversation_id = ?', [sessionId]);
+                dbRun(
+                    'UPDATE chat_sessions SET preview = ?, message_count = ?, updated_at = ? WHERE id = ?',
+                    [aiMessage.slice(0, 80), countRow ? countRow.cnt : 0, now, sessionId]
+                );
+            } catch (dbErr) {
+                console.error('DB save error:', dbErr.message);
+            }
+        }
         
         res.json({
             success: true,
@@ -406,6 +468,136 @@ app.delete('/api/chat/history', (req, res) => {
     }
 });
 
+// ── Chat History Routes (per-user, persistent) ──────────────────
+
+// GET /api/user/stats — statistik user untuk homepage
+app.get('/api/user/stats', authMiddleware, (req, res) => {
+    try {
+        const { dbGet, dbAll } = require('./config/database');
+        const uid = req.user.id;
+
+        const totalSessions = dbGet('SELECT COUNT(*) as cnt FROM chat_sessions WHERE user_id = ?', [uid]);
+        const totalMessages = dbGet('SELECT COALESCE(SUM(message_count),0) as cnt FROM chat_sessions WHERE user_id = ?', [uid]);
+
+        // Sesi hari ini
+        const today = new Date().toISOString().slice(0, 10);
+        const todaySessions = dbGet(
+            "SELECT COUNT(*) as cnt FROM chat_sessions WHERE user_id = ? AND created_at LIKE ?",
+            [uid, `${today}%`]
+        );
+
+        // Pesan minggu ini
+        const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+        const weekMessages = dbGet(
+            'SELECT COALESCE(SUM(message_count),0) as cnt FROM chat_sessions WHERE user_id = ? AND updated_at >= ?',
+            [uid, weekAgo]
+        );
+
+        // 3 sesi terakhir
+        const recents = dbAll(
+            'SELECT id, title, preview, updated_at FROM chat_sessions WHERE user_id = ? ORDER BY updated_at DESC LIMIT 3',
+            [uid]
+        );
+
+        res.json({
+            success: true,
+            stats: {
+                totalSessions: totalSessions?.cnt || 0,
+                totalMessages: totalMessages?.cnt || 0,
+                todaySessions: todaySessions?.cnt || 0,
+                weekMessages: weekMessages?.cnt || 0,
+            },
+            recents,
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// GET /api/chat/sessions — ambil semua sesi chat user
+app.get('/api/chat/sessions', authMiddleware, (req, res) => {
+    try {
+        const { dbAll } = require('./config/database');
+        const sessions_list = dbAll(
+            `SELECT id, title, preview, message_count, created_at, updated_at
+             FROM chat_sessions WHERE user_id = ?
+             ORDER BY updated_at DESC LIMIT 50`,
+            [req.user.id]
+        );
+        res.json({ success: true, sessions: sessions_list });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// GET /api/chat/sessions/:id — ambil pesan dalam satu sesi
+app.get('/api/chat/sessions/:id', authMiddleware, (req, res) => {
+    try {
+        const { dbGet, dbAll } = require('./config/database');
+        const session = dbGet(
+            'SELECT * FROM chat_sessions WHERE id = ? AND user_id = ?',
+            [req.params.id, req.user.id]
+        );
+        if (!session) return res.status(404).json({ success: false, error: 'Sesi tidak ditemukan' });
+
+        const msgs = dbAll(
+            'SELECT role, content, timestamp FROM messages WHERE conversation_id = ? ORDER BY timestamp ASC',
+            [req.params.id]
+        );
+        res.json({ success: true, session, messages: msgs });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// POST /api/chat/sessions — buat sesi baru
+app.post('/api/chat/sessions', authMiddleware, (req, res) => {
+    try {
+        const { dbInsert } = require('./config/database');
+        const { v4: uuidv4 } = require('uuid');
+        const id = uuidv4();
+        dbInsert(
+            'INSERT INTO chat_sessions (id, user_id, title) VALUES (?, ?, ?)',
+            [id, req.user.id, 'Percakapan baru']
+        );
+        res.json({ success: true, sessionId: id });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// DELETE /api/chat/sessions/:id — hapus satu sesi
+app.delete('/api/chat/sessions/:id', authMiddleware, (req, res) => {
+    try {
+        const { dbRun, dbGet } = require('./config/database');
+        const session = dbGet(
+            'SELECT id FROM chat_sessions WHERE id = ? AND user_id = ?',
+            [req.params.id, req.user.id]
+        );
+        if (!session) return res.status(404).json({ success: false, error: 'Sesi tidak ditemukan' });
+        dbRun('DELETE FROM messages WHERE conversation_id = ?', [req.params.id]);
+        dbRun('DELETE FROM chat_sessions WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// DELETE /api/chat/sessions — hapus semua sesi user
+app.delete('/api/chat/sessions', authMiddleware, (req, res) => {
+    try {
+        const { dbAll, dbRun } = require('./config/database');
+        const user_sessions = dbAll('SELECT id FROM chat_sessions WHERE user_id = ?', [req.user.id]);
+        user_sessions.forEach(s => {
+            dbRun('DELETE FROM messages WHERE conversation_id = ?', [s.id]);
+        });
+        dbRun('DELETE FROM chat_sessions WHERE user_id = ?', [req.user.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // Route: Reload personality
 app.post('/api/personality/reload', (req, res) => {
     cachedSystemPrompt = null;
@@ -433,7 +625,8 @@ app.use(function(err, req, res, next) {
 // ========================================
 // START SERVER
 // ========================================
-app.listen(PORT, function() {
+initDatabase().then(() => {
+  app.listen(PORT, function() {
     let providerDisplay = '';
     if (cohere) {
         providerDisplay = 'Cohere ✅ (Primary)';
@@ -457,6 +650,10 @@ app.listen(PORT, function() {
     console.log('║                                                          ║');
     console.log('╚══════════════════════════════════════════════════════════╝');
     console.log('');
+  });
+}).catch(err => {
+  console.error('❌ Failed to initialize database:', err.message);
+  process.exit(1);
 });
 
 module.exports = app;
