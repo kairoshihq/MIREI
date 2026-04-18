@@ -27,6 +27,8 @@
 .mirei-profile-grid {
   @apply grid gap-6;
   grid-template-columns: 380px 1fr;
+  grid-template-rows: auto;
+  align-items: start;
   animation: slideUp 0.4s ease;
 }
 
@@ -169,6 +171,8 @@
 
 .mirei-info-section {
   @apply flex flex-col gap-4;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Tabs */
@@ -205,7 +209,26 @@
   @apply rounded-2xl p-6;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  min-height: 500px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mirei-tab-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mirei-tab-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mirei-tab-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+
+.mirei-tab-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
 }
 
 .mirei-content-section {
@@ -444,3 +467,63 @@
     transform: translateY(0);
   }
 }
+
+/* ========== CUSTOMIZATION SECTION ========== */
+
+.mirei-custom-section {
+  @apply flex flex-col gap-4;
+  animation: slideUp 0.5s ease;
+}
+
+.mirei-custom-header {
+  @apply mb-1;
+}
+
+.mirei-custom-title {
+  @apply text-lg font-bold mb-1;
+  color: var(--t1);
+}
+
+.mirei-custom-sub {
+  @apply text-xs;
+  color: var(--t3);
+}
+
+/* Tabs - sama seperti mirei-tabs */
+.mirei-custom-tabs {
+  @apply flex gap-2 p-1 rounded-xl;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-custom-tab {
+  @apply flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg cursor-pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Sora', sans-serif;
+  color: var(--t3);
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.mirei-custom-tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t2);
+}
+
+.mirei-custom-tab-active {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* Content container - sama seperti mirei-tab-content */
+.mirei-custom-content {
+  @apply rounded-2xl p-6;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 200px;
+}
+
+

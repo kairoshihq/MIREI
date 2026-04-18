@@ -5,8 +5,10 @@ import { useApp } from '../../App';
 import ChatWindow from '../../components/chat/ChatWindow';
 import ChatInput from '../../components/chat/ChatInput';
 import ChatHistoryPanel from '../../components/chat/ChatHistoryPanel';
+import WelcomeScreen from '../../components/chat/WelcomeScreen';
 import { IconButton } from '../../components/common/Button';
 import { PulseDot } from '../../components/common/Loading';
+import { FlowerIcon, ClockIcon, PlusIcon, TrashIcon } from '../../components/common/Icon';
 import '../../styles/chat.css';
 
 const MIREI = {
@@ -105,11 +107,35 @@ const Live2DPanel = ({ emotion }) => {
 
 // ── ChatPage ───────────────────────────────────────────────────
 const ChatPage = () => {
-  const { messages, sendMessage, isLoading, clearChat, newChat } = useChat(MIREI);
-  const { activePage, notifyChatMessage } = useApp();
+  const { messages, sendMessage, isLoading, clearChat, newChat, loadSession } = useChat(MIREI);
+  const { activePage, notifyChatMessage, user } = useApp();
   const emotion = useMemo(() => detectEmotion(messages), [messages]);
   const [historyPanelOpen, setHistoryPanelOpen] = useState(false);
   const prevLengthRef = useRef(messages.length);
+
+  // Tampilkan welcome screen saat pertama masuk atau ganti akun
+  const [showWelcome, setShowWelcome] = useState(true);
+  const lastUserRef = useRef(user?.id);
+
+  // Track berapa kali halaman chat aktif → untuk reset animasi welcome
+  const [welcomeKey, setWelcomeKey] = useState(0);
+  const wasActiveRef = useRef(activePage === 'chat');
+
+  useEffect(() => {
+    const isNowActive = activePage === 'chat';
+    if (isNowActive && !wasActiveRef.current) {
+      // Baru kembali ke halaman chat → reset animasi
+      setWelcomeKey(k => k + 1);
+    }
+    wasActiveRef.current = isNowActive;
+  }, [activePage]);
+
+  useEffect(() => {
+    if (user?.id !== lastUserRef.current) {
+      setShowWelcome(true);
+      lastUserRef.current = user?.id;
+    }
+  }, [user?.id]);
 
   // Detect new AI messages and notify sidebar
   useEffect(() => {
@@ -133,9 +159,14 @@ const ChatPage = () => {
   };
 
   const handleSelectChat = (chat) => {
-    console.log('Loading chat:', chat);
-    // TODO: Load chat messages dari backend berdasarkan chat.id
-    // Untuk sekarang hanya log saja
+    loadSession(chat.id);
+    setShowWelcome(false);
+    setHistoryPanelOpen(false);
+  };
+
+  const handleWelcomeStart = (firstMessage) => {
+    setShowWelcome(false);
+    sendMessage(firstMessage);
   };
 
   return (
@@ -156,7 +187,9 @@ const ChatPage = () => {
           <div className="flex items-center gap-3">
             <div className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-lg" style={{
               background:'linear-gradient(135deg,#7c3aed,#ec4899)',
-              boxShadow:'0 0 14px rgba(139,92,246,0.4)' }}>🌸</div>
+              boxShadow:'0 0 14px rgba(139,92,246,0.4)' }}>
+              <FlowerIcon size={20} color="#fff" />
+            </div>
             <div>
               <div className="text-[14px] font-semibold" style={{ color:'var(--t1)' }}>{MIREI.name}</div>
               <div className="text-[11px] flex items-center gap-[5px]" style={{
@@ -173,37 +206,29 @@ const ChatPage = () => {
             <IconButton
               onClick={handleViewHistory}
               title="Lihat riwayat chat"
-              icon={
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
-              }
+              icon={<ClockIcon size={15} />}
             />
             <IconButton
               onClick={handleNewChat}
               title="Percakapan baru"
-              icon={
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"/>
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-              }
+              icon={<PlusIcon size={15} />}
             />
             <IconButton
               onClick={clearChat}
               title="Hapus percakapan"
-              icon={
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
-                </svg>
-              }
+              icon={<TrashIcon size={15} />}
             />
           </div>
         </div>
 
-        <ChatWindow messages={messages} isLoading={isLoading} character={MIREI} />
-        <ChatInput onSend={sendMessage} disabled={isLoading} placeholder={`Kirim pesan ke ${MIREI.name}...`} />
+        {showWelcome ? (
+          <WelcomeScreen key={welcomeKey} username={user?.username} onStart={handleWelcomeStart} active={activePage === 'chat'} />
+        ) : (
+          <>
+            <ChatWindow messages={messages} isLoading={isLoading} character={MIREI} />
+            <ChatInput onSend={sendMessage} disabled={isLoading} placeholder={`Kirim pesan ke ${MIREI.name}...`} />
+          </>
+        )}
       </div>
 
       {/* Live2D panel */}

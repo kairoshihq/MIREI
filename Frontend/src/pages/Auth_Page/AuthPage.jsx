@@ -6,12 +6,12 @@ const API = 'http://localhost:3000/api/auth';
 
 // ── Step components ───────────────────────────────────────────────
 
-const RegisterForm = ({ onSwitch, onOTPSent }) => {
+const RegisterForm = ({ onSwitch, onOTPSent, onSuccess }) => {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v })); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +25,12 @@ const RegisterForm = ({ onSwitch, onOTPSent }) => {
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
-      onOTPSent(form.email);
+      // Dev mode: langsung dapat token tanpa OTP
+      if (data.token) {
+        onSuccess(data.token, data.user);
+      } else {
+        onOTPSent(form.email);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -259,7 +264,7 @@ const AuthPage = ({ onAuthenticated }) => {
           <LoginForm onSwitch={() => setMode('register')} onSuccess={handleSuccess} />
         )}
         {mode === 'register' && (
-          <RegisterForm onSwitch={() => setMode('login')} onOTPSent={handleOTPSent} />
+          <RegisterForm onSwitch={() => setMode('login')} onOTPSent={handleOTPSent} onSuccess={handleSuccess} />
         )}
         {mode === 'otp' && (
           <OTPForm email={pendingEmail} onSuccess={handleSuccess} />

@@ -4,6 +4,7 @@ import { useApp } from '../../App';
 import { Toggle, Select } from '../../components/common/Input';
 import { ConfirmModal } from '../../components/common/Modal';
 import { ToastContainer, useToast } from '../../components/common/Toast';
+import { BellIcon, LockIcon, TrashIcon, PaletteIcon, GlobeIcon, AlertIcon } from '../../components/common/Icon';
 import './settings.css';
 
 const SettingsPage = () => {
@@ -47,7 +48,7 @@ const SettingsPage = () => {
   const SECTIONS = [
     {
       title: 'Tampilan',
-      icon: '🎨',
+      icon: <PaletteIcon size={18} />,
       rows: [
         {
           label: 'Mode Gelap',
@@ -83,7 +84,7 @@ const SettingsPage = () => {
     },
     {
       title: 'Notifikasi',
-      icon: '🔔',
+      icon: <BellIcon size={18} />,
       rows: [
         {
           label: 'Notifikasi Push',
@@ -99,7 +100,7 @@ const SettingsPage = () => {
     },
     {
       title: 'Privasi & Data',
-      icon: '🔒',
+      icon: <LockIcon size={18} />,
       rows: [
         {
           label: 'Simpan Riwayat',
@@ -115,7 +116,7 @@ const SettingsPage = () => {
     },
     {
       title: 'Bahasa',
-      icon: '🌐',
+      icon: <GlobeIcon size={18} />,
       rows: [
         {
           label: 'Bahasa Antarmuka',
@@ -169,15 +170,15 @@ const SettingsPage = () => {
         {/* Danger zone */}
         <div className="settings-section-card" style={{ borderColor:'rgba(239,68,68,0.2)', animationDelay:'0.28s' }}>
           <div className="settings-section-head">
-            <span className="settings-section-icon">⚠️</span>
+            <span className="settings-section-icon"><AlertIcon size={18} /></span>
             <span className="settings-section-title settings-section-title-danger">Zona Berbahaya</span>
           </div>
           <div className="p-5 pt-0 flex flex-col gap-[10px]">
             <button className="settings-danger-btn" onClick={handleClearHistory}>
-              🗑 Hapus Semua Riwayat Chat
+              <TrashIcon size={16} /> Hapus Semua Riwayat Chat
             </button>
             <button className="settings-danger-btn settings-danger-btn-critical" onClick={handleDeleteAccount}>
-              💀 Hapus Akun Permanen
+              <TrashIcon size={16} /> Hapus Akun Permanen
             </button>
           </div>
         </div>

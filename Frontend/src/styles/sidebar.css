@@ -19,6 +19,86 @@
   color: #a78bfa;
 }
 
+/* Particle effect untuk nav items */
+.sidebar-nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient background yang muncul perlahan saat hover */
+.sidebar-nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sidebar-nav-item:hover::before {
+  opacity: 1;
+}
+
+/* Partikel yang bergerak ke atas dari bawah */
+.sidebar-nav-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 120%, rgba(139, 92, 246, 0.7) 2px, transparent 2px),
+    radial-gradient(circle at 50% 130%, rgba(236, 72, 153, 0.6) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 80% 125%, rgba(167, 139, 250, 0.5) 2px, transparent 2px),
+    radial-gradient(circle at 35% 135%, rgba(139, 92, 246, 0.6) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 65% 128%, rgba(236, 72, 153, 0.5) 2px, transparent 2px),
+    radial-gradient(circle at 90% 132%, rgba(167, 139, 250, 0.6) 1.5px, transparent 1.5px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-nav-item:hover::after {
+  opacity: 1;
+  animation: particleRiseUp 2.5s ease-out infinite;
+}
+
+@keyframes particleRiseUp {
+  0% {
+    background-position: 
+      20% 120%, 
+      50% 130%, 
+      80% 125%, 
+      35% 135%, 
+      65% 128%, 
+      90% 132%;
+  }
+  100% {
+    background-position: 
+      20% -20%, 
+      50% -30%, 
+      80% -25%, 
+      35% -35%, 
+      65% -28%, 
+      90% -32%;
+  }
+}
+
+/* Pastikan konten button tetap di atas */
+.sidebar-nav-item > * {
+  position: relative;
+  z-index: 2;
+}
+
 .sidebar-nav-item:hover:not(.sidebar-nav-item-active) {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
@@ -37,7 +117,13 @@
 
 .sidebar-user-profile:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+
+.sidebar-user-profile:active {
+  transform: translateY(0);
 }
 
 /* Scrollbar */

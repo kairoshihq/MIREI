@@ -1,23 +1,21 @@
 // hooks/useChat.js
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { sendMessage as sendChatMessage, getChatHistory, clearChatHistory, saveChatHistory } from '../services/chat';
+import { sendMessage as sendChatMessage, getChatHistory, clearChatHistory, saveChatHistory, getSessionMessages } from '../services/chat';
 
-// ─── Emotion Detection ───────────────────────────────────────────
 export const detectEmotion = (messages) => {
   if (!messages || messages.length === 0) return 'neutral';
-  const lastFew = messages.slice(-4).map(m => m.content?.toLowerCase() || '');
-  const combined = lastFew.join(' ');
-  if (/makasih|terima kasih|thanks|thank you/.test(combined)) return 'happy';
+  const combined = messages.slice(-4).map(m => m.content?.toLowerCase() || '').join(' ');
+  if (/makasih|terima kasih|thanks/.test(combined)) return 'happy';
   if (/sedih|capek|lelah|kecewa|nangis/.test(combined)) return 'sad';
-  if (/lucu|wkwk|haha|lol|ngakak|😂|😆/.test(combined)) return 'laugh';
+  if (/lucu|wkwk|haha|lol|ngakak/.test(combined)) return 'laugh';
   return 'neutral';
 };
 
-// ─── useChat Hook ─────────────────────────────────────────────────
 const useChat = (character) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [emotion, setEmotion] = useState('neutral');
+  const [sessionId, setSessionId] = useState(null);
   const isMounted = useRef(true);
 
   useEffect(() => {
@@ -25,116 +23,98 @@ const useChat = (character) => {
     return () => { isMounted.current = false; };
   }, []);
 
-  // Update emotion whenever messages change
   useEffect(() => {
     setEmotion(detectEmotion(messages));
   }, [messages]);
 
-  // Load history on mount
   useEffect(() => {
     const loadHistory = async () => {
       try {
         const history = await getChatHistory(character.id);
         if (history && history.length > 0) {
           setMessages(history);
-        } else if (character.greeting) {
-          setMessages([{
-            id: `greeting_${Date.now()}`,
-            role: 'assistant',
-            content: character.greeting,
-            timestamp: new Date().toISOString()
-          }]);
         }
       } catch (error) {
         console.error('Load history error:', error);
       }
     };
     loadHistory();
-  }, [character.id, character.greeting]);
+  }, [character.id]);
 
   const sendMessage = useCallback(async (userInput) => {
-    if (!userInput || !userInput.trim()) return;
-    if (isLoading) return;
-
+    if (!userInput?.trim() || isLoading) return;
     const trimmedInput = userInput.trim();
 
     const userMessage = {
-      id: `user_${Date.now()}_${Math.random()}`,
+      id: `user_${Date.now()}`,
       role: 'user',
       content: trimmedInput,
       timestamp: new Date().toISOString()
     };
 
     setMessages(prev => {
-      const newMessages = [...prev, userMessage];
-      saveChatHistory(character.id, newMessages);
-      return newMessages;
+      const next = [...prev, userMessage];
+      saveChatHistory(character.id, next);
+      return next;
     });
-
     setIsLoading(true);
 
     try {
-      const response = await sendChatMessage(character.id, trimmedInput);
+      const response = await sendChatMessage(character.id, trimmedInput, sessionId);
+      if (response.sessionId && !sessionId) setSessionId(response.sessionId);
+
       const aiMessage = {
-        id: `ai_${Date.now()}_${Math.random()}`,
+        id: `ai_${Date.now()}`,
         role: 'assistant',
         content: response.reply,
         timestamp: new Date().toISOString()
       };
       setMessages(prev => {
-        const newMessages = [...prev, aiMessage];
-        saveChatHistory(character.id, newMessages);
-        return newMessages;
+        const next = [...prev, aiMessage];
+        saveChatHistory(character.id, next);
+        return next;
       });
     } catch (error) {
-      console.error('Chat error:', error);
-      const errorMessage = {
+      setMessages(prev => [...prev, {
         id: `error_${Date.now()}`,
         role: 'assistant',
         content: 'Maaf, aku sedang bermasalah. Coba lagi ya!',
         timestamp: new Date().toISOString(),
         isError: true
-      };
-      setMessages(prev => {
-        const newMessages = [...prev, errorMessage];
-        saveChatHistory(character.id, newMessages);
-        return newMessages;
-      });
+      }]);
     } finally {
-      if (isMounted.current) {
-        setIsLoading(false);
-      }
+      if (isMounted.current) setIsLoading(false);
     }
-  }, [character.id, isLoading]);
+  }, [character.id, isLoading, sessionId]);
+
+  const loadSession = useCallback(async (sid) => {
+    const msgs = await getSessionMessages(sid);
+    if (msgs && msgs.length > 0) {
+      setMessages(msgs.map((m, i) => ({
+        id: `hist_${i}`,
+        role: m.role,
+        content: m.content,
+        timestamp: m.timestamp,
+      })));
+      setSessionId(sid);
+    }
+  }, []);
 
   const clearChat = useCallback(async () => {
-    try {
-      await clearChatHistory(character.id);
-      setMessages([]);
-      setEmotion('neutral');
-    } catch (error) {
-      console.error('Clear chat error:', error);
-    }
+    await clearChatHistory(character.id);
+    setMessages([]);
+    setSessionId(null);
+    setEmotion('neutral');
   }, [character.id]);
 
   const newChat = useCallback(async () => {
-    try {
-      await clearChatHistory(character.id);
-      setMessages([]);
-      setEmotion('neutral');
-    } catch (error) {
-      console.error('New chat error:', error);
-    }
+    await clearChatHistory(character.id);
+    setMessages([]);
+    setSessionId(null);
+    setEmotion('neutral');
   }, [character.id]);
 
-  return {
-    messages,
-    sendMessage,
-    isLoading,
-    clearChat,
-    newChat,
-    emotion,
-  };
+  return { messages, sendMessage, isLoading, clearChat, newChat, emotion, sessionId, loadSession };
 };
 
 export default useChat;

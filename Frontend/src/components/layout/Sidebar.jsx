@@ -68,10 +68,22 @@ const NAV_ITEMS = [
 
 // ─── Main Sidebar Component ───────────────────────────────────────
 const Sidebar = () => {
-  const { activePage, navigateTo, theme, toggleTheme, chatUnread } = useApp();
+  const { activePage, navigateTo, theme, toggleTheme, chatUnread, user } = useApp();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+
+  // Get user initials for avatar
+  const getUserInitial = () => {
+    if (!user?.username) return 'M';
+    return user.username.charAt(0).toUpperCase();
+  };
+
+  // Get display name (first name or full username)
+  const getDisplayName = () => {
+    if (!user?.username) return 'Mirei User';
+    return user.username;
+  };
 
   return (
     <div style={{
@@ -209,25 +221,27 @@ const Sidebar = () => {
         )}
 
         {/* User Profile */}
-        <div 
+        <button 
+          onClick={() => navigateTo && navigateTo('profile')}
           style={{
             ...userProfile,
             justifyContent: isCollapsed ? 'center' : 'flex-start',
             padding: isCollapsed ? '10px' : '12px',
           }}
           className="sidebar-user-profile"
+          title={isCollapsed ? 'Buka Profile' : ''}
         >
-          <div style={userAvatar}>M</div>
+          <div style={userAvatar}>{getUserInitial()}</div>
           {!isCollapsed && (
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={userName}>Mirei User</div>
+              <div style={userName}>{getDisplayName()}</div>
               <div style={userPlan}>Plan Gratis</div>
             </div>
           )}
           {!isCollapsed && (
             <span style={{ color:'var(--t3)', fontSize:'16px', letterSpacing:'2px', lineHeight:1 }}>···</span>
           )}
-        </div>
+        </button>
       </div>
     </div>
   );
@@ -423,6 +437,9 @@ const userProfile = {
   border: '1px solid rgba(255,255,255,0.06)',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
+  width: '100%',
+  textAlign: 'left',
+  fontFamily: "'Sora', sans-serif",
 };
 
 const userAvatar = {
