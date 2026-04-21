@@ -39,6 +39,9 @@ async function initDatabase() {
       username  TEXT    NOT NULL,
       password  TEXT    NOT NULL,
       verified  INTEGER NOT NULL DEFAULT 0,
+      email_verified   INTEGER NOT NULL DEFAULT 0,
+      email_changed_at TEXT    DEFAULT NULL,
+      last_activity_at TEXT    DEFAULT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -47,6 +50,19 @@ async function initDatabase() {
       code       TEXT    NOT NULL,
       expires_at INTEGER NOT NULL,
       PRIMARY KEY (email)
+    );
+
+    CREATE TABLE IF NOT EXISTS email_verify_tokens (
+      token      TEXT    NOT NULL PRIMARY KEY,
+      user_id    INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS activity_log (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id    INTEGER NOT NULL,
+      action     TEXT    NOT NULL,
+      created_at TEXT    NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS conversations (
@@ -82,6 +98,9 @@ async function initDatabase() {
     "ALTER TABLE chat_sessions ADD COLUMN updated_at TEXT DEFAULT ''",
     "ALTER TABLE chat_sessions ADD COLUMN preview TEXT DEFAULT ''",
     "ALTER TABLE chat_sessions ADD COLUMN message_count INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE users ADD COLUMN email_changed_at TEXT DEFAULT NULL",
+    "ALTER TABLE users ADD COLUMN last_activity_at TEXT DEFAULT NULL",
   ];
   for (const sql of migrations) {
     try { db.run(sql); } catch (_) { /* kolom sudah ada, skip */ }

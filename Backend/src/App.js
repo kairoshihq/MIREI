@@ -6,6 +6,17 @@ const path = require('path');
 const { CohereClient } = require('cohere-ai');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP, handleMe } = require('./controllers/authController');
+const { sendVerificationLink, verifyEmailToken, requestEmailChange, confirmEmailChange } = require('./services/authService');
+const { dbGet: _dbGet, dbRun: _dbRun, dbAll: _dbAll, dbInsert: _dbInsert } = require('./config/database');
+
+// Helper log activity — dipakai di route inline
+function logActivity(userId, action) {
+  const now = new Date().toISOString();
+  try {
+    _dbRun('INSERT INTO activity_log (user_id, action, created_at) VALUES (?, ?, ?)', [userId, action, now]);
+    _dbRun('UPDATE users SET last_activity_at = ? WHERE id = ?', [now, userId]);
+  } catch (_) {}
+}
 const authMiddleware = require('./middleware/auth');
 const { initDatabase } = require('./config/database');
 
@@ -225,6 +236,53 @@ app.post('/api/auth/login', handleLogin);
 app.post('/api/auth/resend-otp', handleResendOTP);
 app.get('/api/auth/me', authMiddleware, handleMe);
 
+// POST /api/auth/send-verification — kirim magic link ke email user
+app.post('/api/auth/send-verification', authMiddleware, async (req, res) => {
+  try {
+    const result = await sendVerificationLink(req.user.id);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/auth/request-email-change — validasi password + kirim OTP ke email baru
+app.post('/api/auth/request-email-change', authMiddleware, async (req, res) => {
+  try {
+    const { newEmail, password } = req.body;
+    if (!newEmail || !password) return res.status(400).json({ success: false, error: 'Email baru dan password wajib diisi' });
+    const result = await requestEmailChange(req.user.id, newEmail, password);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/auth/confirm-email-change — verifikasi OTP + update email
+app.post('/api/auth/confirm-email-change', authMiddleware, async (req, res) => {
+  try {
+    const { newEmail, code } = req.body;
+    if (!newEmail || !code) return res.status(400).json({ success: false, error: 'Email baru dan kode OTP wajib diisi' });
+    const result = await confirmEmailChange(req.user.id, newEmail, code);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/auth/verify-email?token=xxx — klik dari email, redirect ke frontend
+app.get('/api/auth/verify-email', (req, res) => {
+  const APP_URL = process.env.APP_URL || 'http://localhost:5173';
+  const { token } = req.query;
+  if (!token) return res.redirect(`${APP_URL}/?verify_status=error&msg=${encodeURIComponent('Token tidak ditemukan')}`);
+  try {
+    verifyEmailToken(token);
+    res.redirect(`${APP_URL}/?verify_status=success`);
+  } catch (err) {
+    res.redirect(`${APP_URL}/?verify_status=error&msg=${encodeURIComponent(err.message)}`);
+  }
+});
+
 // PUT /api/auth/password — ubah password
 app.put('/api/auth/password', authMiddleware, async (req, res) => {
     try {
@@ -242,6 +300,7 @@ app.put('/api/auth/password', authMiddleware, async (req, res) => {
         if (!valid) return res.status(400).json({ success: false, error: 'Password lama salah' });
         const newHash = await bcrypt.hash(newPassword, 10);
         dbRun('UPDATE users SET password = ? WHERE id = ?', [newHash, req.user.id]);
+        logActivity(req.user.id, 'Password berhasil diubah');
         res.json({ success: true, message: 'Password berhasil diubah' });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -469,6 +528,20 @@ app.delete('/api/chat/history', (req, res) => {
 });
 
 // ── Chat History Routes (per-user, persistent) ──────────────────
+
+// GET /api/user/activity — ambil log aktivitas user (5 terbaru)
+app.get('/api/user/activity', authMiddleware, (req, res) => {
+  try {
+    const { dbAll } = require('./config/database');
+    const logs = dbAll(
+      'SELECT action, created_at FROM activity_log WHERE user_id = ? ORDER BY created_at DESC LIMIT 5',
+      [req.user.id]
+    );
+    res.json({ success: true, logs });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // GET /api/user/stats — statistik user untuk homepage
 app.get('/api/user/stats', authMiddleware, (req, res) => {

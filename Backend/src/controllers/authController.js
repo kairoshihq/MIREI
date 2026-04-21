@@ -58,5 +58,4 @@ async function handleResendOTP(req, res) {
 function handleMe(req, res) {
   res.json({ success: true, user: req.user });
 }
-
 module.exports = { handleRegister, handleVerifyOTP, handleLogin, handleResendOTP, handleMe };

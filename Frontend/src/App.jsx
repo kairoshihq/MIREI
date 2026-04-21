@@ -219,11 +219,76 @@ function App() {
   const [activePage, setActivePage] = useState('home');
   const [theme, setTheme] = useState('dark');
   const [chatUnread, setChatUnread] = useState(0);
+  const [verifyBanner, setVerifyBanner] = useState(null); // { type, msg }
 
   // Auth state — cek localStorage dulu
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('mirei_user')); } catch { return null; }
   });
+
+  // Cek query param verify_status saat pertama load
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('verify_status');
+
+    // Listener untuk pesan dari tab verifikasi (BroadcastChannel)
+    const bc = new BroadcastChannel('mirei_verify');
+    bc.onmessage = (e) => {
+      if (e.data?.type === 'EMAIL_VERIFIED') {
+        const token = localStorage.getItem('mirei_token');
+        if (token) {
+          fetch('http://localhost:3000/api/auth/me', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+            .then(r => r.json())
+            .then(data => {
+              if (data.success) {
+                const updated = { ...data.user };
+                localStorage.setItem('mirei_user', JSON.stringify(updated));
+                setUser(updated);
+              }
+            })
+            .catch(() => {});
+        }
+        setVerifyBanner({ type: 'success', msg: '🎉 Email berhasil diverifikasi!' });
+        setTimeout(() => setVerifyBanner(null), 5000);
+      }
+    };
+
+    if (!status) return () => bc.close();
+
+    // Bersihkan URL tanpa reload
+    window.history.replaceState({}, '', window.location.pathname);
+
+    if (status === 'success') {
+      // Kirim pesan ke tab lain yang mungkin masih buka app
+      bc.postMessage({ type: 'EMAIL_VERIFIED' });
+
+      // Update tab ini juga
+      const token = localStorage.getItem('mirei_token');
+      if (token) {
+        fetch('http://localhost:3000/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.success) {
+              const updated = { ...data.user };
+              localStorage.setItem('mirei_user', JSON.stringify(updated));
+              setUser(updated);
+            }
+          })
+          .catch(() => {});
+      }
+      setVerifyBanner({ type: 'success', msg: '🎉 Email berhasil diverifikasi!' });
+    } else {
+      const msg = params.get('msg') || 'Verifikasi gagal';
+      setVerifyBanner({ type: 'error', msg });
+    }
+
+    setTimeout(() => setVerifyBanner(null), 5000);
+    return () => bc.close();
+  }, []);
 
   const handleAuthenticated = (userData) => setUser(userData);
 
@@ -231,6 +296,12 @@ function App() {
     localStorage.removeItem('mirei_token');
     localStorage.removeItem('mirei_user');
     setUser(null);
+  };
+
+  const updateUser = (updated) => {
+    const merged = { ...user, ...updated };
+    localStorage.setItem('mirei_user', JSON.stringify(merged));
+    setUser(merged);
   };
 
   const toggleTheme = () => {
@@ -261,6 +332,7 @@ function App() {
     notifyChatMessage,
     user,
     handleLogout,
+    updateUser,
   };
 
   // Tampilkan auth page kalau belum login
@@ -282,6 +354,22 @@ function App() {
       <style>{GLOBAL_STYLES}</style>
       <AppContext.Provider value={contextValue}>
         <div className="app-shell" data-theme={theme}>
+          {verifyBanner && (
+            <div style={{
+              position: 'fixed', top: 16, left: '50%', transform: 'translateX(-50%)',
+              zIndex: 9999, padding: '12px 20px', borderRadius: '12px',
+              fontSize: '13px', fontWeight: 600, fontFamily: 'var(--font)',
+              display: 'flex', alignItems: 'center', gap: '8px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+              background: verifyBanner.type === 'success' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
+              border: `1px solid ${verifyBanner.type === 'success' ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}`,
+              color: verifyBanner.type === 'success' ? '#34d399' : '#f87171',
+              animation: 'slideUp 0.3s ease',
+            }}>
+              {verifyBanner.msg}
+              <button onClick={() => setVerifyBanner(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '14px', lineHeight: 1, marginLeft: 4 }}>✕</button>
+            </div>
+          )}
           <Sidebar />
           <main className="app-main">
             {PAGES.map(page => (
