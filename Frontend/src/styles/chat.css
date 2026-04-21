@@ -418,3 +418,181 @@
   --t2: #2d2d44;
   --t3: #66667a;
 }
+
+/* ── Light Theme Overrides ──────────────────────────────────────── */
+[data-theme="light"] .assistant-bubble {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  color: var(--t1);
+  box-shadow: 0 2px 8px rgba(100, 80, 180, 0.08);
+}
+
+[data-theme="light"] .assistant-bubble.error {
+  background: rgba(254, 242, 242, 0.95);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+[data-theme="light"] .user-avatar-placeholder {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+[data-theme="light"] .typing-indicator {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  box-shadow: 0 2px 8px rgba(100, 80, 180, 0.08);
+}
+
+[data-theme="light"] .chat-input-form {
+  background: rgba(247, 248, 252, 0.95);
+  border-top: 1px solid rgba(139, 92, 246, 0.12);
+}
+
+[data-theme="light"] .chat-input-field {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: var(--t1);
+}
+
+[data-theme="light"] .chat-input-field::placeholder {
+  color: var(--t3);
+}
+
+[data-theme="light"] .chat-input-field:focus {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  background: #fff;
+}
+
+[data-theme="light"] .message-time {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .assistant-bubble .message-time {
+  color: var(--t3);
+}
+
+[data-theme="light"] .chat-window::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.04);
+}
+
+[data-theme="light"] .chat-window::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.25);
+}
+
+[data-theme="light"] .chat-window::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+/* ── Chat Topbar ────────────────────────────────────────────────── */
+.chat-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(12, 14, 22, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+/* ── Left: action buttons ── */
+.chat-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-topbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--t2);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.chat-topbar-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--t1);
+}
+
+.chat-topbar-btn-label {
+  display: none;
+}
+
+/* Danger variant — same hover style, no special color */
+.chat-topbar-btn-danger:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--t1);
+}
+
+/* ── Right: Mirei identity ── */
+.chat-topbar-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.chat-topbar-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.08);
+  cursor: default;
+}
+
+.chat-topbar-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t1);
+  letter-spacing: 0.01em;
+}
+
+.chat-topbar-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+}
+
+/* ── Light theme ── */
+[data-theme="light"] .chat-topbar {
+  background: rgba(247, 248, 252, 0.9);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .chat-topbar-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(139, 92, 246, 0.15);
+  color: var(--t2);
+}
+
+[data-theme="light"] .chat-topbar-btn:hover {
+  background: rgba(139, 92, 246, 0.07);
+  border-color: rgba(139, 92, 246, 0.25);
+  color: var(--t1);
+}
+
+[data-theme="light"] .chat-topbar-identity {
+  background: rgba(139, 92, 246, 0.07);
+  border-color: rgba(139, 92, 246, 0.2);
+}

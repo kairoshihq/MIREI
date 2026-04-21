@@ -24,3 +24,5 @@ export { default as AlertIcon } from './AlertIcon';
 export { default as UserIcon } from './UserIcon';
 export { default as BookIcon } from './BookIcon';
 export { default as SparklesIcon } from './SparklesIcon';
+export { default as DownloadIcon } from './DownloadIcon';
+export { default as DatabaseIcon } from './DatabaseIcon';

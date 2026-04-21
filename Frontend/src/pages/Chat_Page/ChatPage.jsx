@@ -179,45 +179,33 @@ const ChatPage = () => {
       />
 
       {/* Chat area */}
-      <div className="flex-1 flex flex-col overflow-hidden">{/* Topbar */}
-        <div className="flex items-center justify-between flex-shrink-0" style={{
-          padding:'14px 22px', borderBottom:'1px solid rgba(255,255,255,0.06)',
-          background:'rgba(12,14,22,0.6)', backdropFilter:'blur(12px)',
-          WebkitBackdropFilter:'blur(12px)' }}>
-          <div className="flex items-center gap-3">
-            <div className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-lg" style={{
-              background:'linear-gradient(135deg,#7c3aed,#ec4899)',
-              boxShadow:'0 0 14px rgba(139,92,246,0.4)' }}>
-              <FlowerIcon size={20} color="#fff" />
-            </div>
-            <div>
-              <div className="text-[14px] font-semibold" style={{ color:'var(--t1)' }}>{MIREI.name}</div>
-              <div className="text-[11px] flex items-center gap-[5px]" style={{
-                color:isLoading?'#a78bfa':'#10b981' }}>
-                <PulseDot
-                  color={isLoading ? '#a78bfa' : '#10b981'}
-                  animate={isLoading}
-                />
-                {isLoading ? 'Mengetik...' : 'Online'}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Topbar */}
+        <div className="chat-topbar">
+          {/* Kiri — action buttons dengan expand on hover */}
+          <div className="chat-topbar-left">
+            <button className="chat-topbar-btn" onClick={handleViewHistory}>
+              <ClockIcon size={15} />
+              <span className="chat-topbar-btn-label">Riwayat</span>
+            </button>
+            <button className="chat-topbar-btn" onClick={handleNewChat}>
+              <PlusIcon size={15} />
+              <span className="chat-topbar-btn-label">Chat Baru</span>
+            </button>
+            <button className="chat-topbar-btn chat-topbar-btn-danger" onClick={clearChat}>
+              <TrashIcon size={15} />
+              <span className="chat-topbar-btn-label">Hapus</span>
+            </button>
+          </div>
+
+          {/* Kanan — Mirei identity */}
+          <div className="chat-topbar-right">
+            <div className="chat-topbar-identity">
+              <span className="chat-topbar-name">{MIREI.name}</span>
+              <div className="chat-topbar-avatar">
+                <FlowerIcon size={16} color="#fff" />
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <IconButton
-              onClick={handleViewHistory}
-              title="Lihat riwayat chat"
-              icon={<ClockIcon size={15} />}
-            />
-            <IconButton
-              onClick={handleNewChat}
-              title="Percakapan baru"
-              icon={<PlusIcon size={15} />}
-            />
-            <IconButton
-              onClick={clearChat}
-              title="Hapus percakapan"
-              icon={<TrashIcon size={15} />}
-            />
           </div>
         </div>
 

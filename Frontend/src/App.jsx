@@ -72,20 +72,20 @@ const GLOBAL_STYLES = `
 
   /* Light theme override */
   [data-theme="light"] {
-    --bg-void:        #e8e9f0;
-    --bg-base:        #f0f1f8;
-    --bg-panel:       rgba(0,0,0,0.03);
-    --bg-card:        rgba(0,0,0,0.05);
-    --bg-card-hover:  rgba(0,0,0,0.08);
-    --bg-active:      rgba(139,92,246,0.12);
-    --glass-bg:       rgba(255,255,255,0.6);
-    --glass-border:   rgba(0,0,0,0.08);
-    --glass-shadow:   0 8px 32px rgba(0,0,0,0.12);
-    --border:         rgba(0,0,0,0.08);
-    --border-accent:  rgba(139,92,246,0.5);
-    --t1:             #111122;
-    --t2:             #5a5b7a;
-    --t3:             #9899b8;
+    --bg-void:        #f0f1f8;
+    --bg-base:        #f7f8fc;
+    --bg-panel:       rgba(255,255,255,0.85);
+    --bg-card:        rgba(255,255,255,0.9);
+    --bg-card-hover:  rgba(255,255,255,1);
+    --bg-active:      rgba(139,92,246,0.1);
+    --glass-bg:       rgba(255,255,255,0.8);
+    --glass-border:   rgba(139,92,246,0.15);
+    --glass-shadow:   0 8px 32px rgba(100,80,180,0.1);
+    --border:         rgba(139,92,246,0.12);
+    --border-accent:  rgba(139,92,246,0.45);
+    --t1:             #18182e;
+    --t2:             #4a4b6a;
+    --t3:             #8889a8;
   }
 
   html, body, #root {
@@ -144,8 +144,12 @@ const GLOBAL_STYLES = `
     bottom: -80px; right: 200px;
   }
 
-  [data-theme="light"] .app-shell::before { opacity: 0.08; }
-  [data-theme="light"] .app-shell::after  { opacity: 0.06; }
+  [data-theme="light"] .app-shell::before { opacity: 0.05; }
+  [data-theme="light"] .app-shell::after  { opacity: 0.04; }
+
+  [data-theme="light"] .app-shell {
+    background: var(--bg-void);
+  }
 
   /* ── Main content area ── */
   .app-main {
