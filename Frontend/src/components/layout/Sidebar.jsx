@@ -91,7 +91,10 @@ const Sidebar = () => {
       width: isCollapsed ? '72px' : '260px',
     }}>
       {/* Header */}
-      <div style={headerStyle}>
+      <div style={{
+        ...headerStyle,
+        justifyContent: isCollapsed ? 'center' : 'space-between',
+      }}>
         {!isCollapsed && (
           <div style={logoSection}>
             <div style={logoIcon}>
@@ -101,12 +104,6 @@ const Sidebar = () => {
               <div style={logoText}>Mirei</div>
               <div style={logoSubtext}>AI Assistant</div>
             </div>
-          </div>
-        )}
-        
-        {isCollapsed && (
-          <div style={logoIconCollapsed}>
-            <span style={{ color:'#a78bfa', fontSize:'20px', filter:'drop-shadow(0 0 6px #7c3aed)' }}>✦</span>
           </div>
         )}
 
@@ -252,11 +249,11 @@ const sidebarStyle = {
   height: '100vh',
   display: 'flex',
   flexDirection: 'column',
-  background: 'rgba(12,14,22,0.7)',
+  background: 'var(--sidebar-bg, rgba(12,14,22,0.85))',
   backdropFilter: 'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
-  borderRight: '1px solid rgba(255,255,255,0.06)',
-  boxShadow: '4px 0 24px rgba(0,0,0,0.3)',
+  borderRight: '1px solid var(--sidebar-border, rgba(255,255,255,0.06))',
+  boxShadow: 'var(--sidebar-shadow, 4px 0 24px rgba(0,0,0,0.3))',
   flexShrink: 0,
   transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   overflow: 'hidden',
@@ -269,7 +266,7 @@ const headerStyle = {
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '20px 16px',
-  borderBottom: '1px solid rgba(255,255,255,0.06)',
+  borderBottom: '1px solid var(--sidebar-border, rgba(255,255,255,0.06))',
   flexShrink: 0,
 };
 
@@ -321,8 +318,8 @@ const toggleBtn = {
   width: '32px',
   height: '32px',
   borderRadius: '8px',
-  border: '1px solid rgba(255,255,255,0.08)',
-  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid var(--sidebar-border, rgba(255,255,255,0.08))',
+  background: 'var(--sidebar-btn-bg, rgba(255,255,255,0.05))',
   color: 'var(--t2)',
   cursor: 'pointer',
   display: 'flex',
@@ -375,7 +372,7 @@ const activeIndicator = {
 };
 
 const footerStyle = {
-  borderTop: '1px solid rgba(255,255,255,0.06)',
+  borderTop: '1px solid var(--sidebar-border, rgba(255,255,255,0.06))',
   padding: '16px 12px',
   display: 'flex',
   flexDirection: 'column',
@@ -386,10 +383,10 @@ const footerStyle = {
 const themeToggleWrap = {
   display: 'flex',
   gap: '6px',
-  background: 'rgba(255,255,255,0.05)',
+  background: 'var(--sidebar-btn-bg, rgba(255,255,255,0.05))',
   borderRadius: '10px',
   padding: '4px',
-  border: '1px solid rgba(255,255,255,0.06)',
+  border: '1px solid var(--sidebar-border, rgba(255,255,255,0.06))',
 };
 
 const themeBtn = {
@@ -417,8 +414,8 @@ const themeIconBtn = {
   width: '100%',
   padding: '10px',
   borderRadius: '10px',
-  border: '1px solid rgba(255,255,255,0.08)',
-  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid var(--sidebar-border, rgba(255,255,255,0.08))',
+  background: 'var(--sidebar-btn-bg, rgba(255,255,255,0.05))',
   color: 'var(--t2)',
   cursor: 'pointer',
   display: 'flex',
@@ -433,8 +430,8 @@ const userProfile = {
   gap: '10px',
   padding: '12px',
   borderRadius: '12px',
-  background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(255,255,255,0.06)',
+  background: 'var(--sidebar-btn-bg, rgba(255,255,255,0.04))',
+  border: '1px solid var(--sidebar-border, rgba(255,255,255,0.06))',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   width: '100%',

@@ -225,3 +225,59 @@
   from { opacity: 0; transform: scale(0.4); }
   to   { opacity: 1; transform: scale(1); }
 }
+
+/* ── Light Theme Overrides ──────────────────────────────────────── */
+[data-theme="light"] .sidebar-toggle-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.35);
+  color: #7c3aed;
+}
+
+[data-theme="light"] .sidebar-nav-item:hover:not(.sidebar-nav-item-active) {
+  background: rgba(139, 92, 246, 0.07);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+[data-theme="light"] .sidebar-nav-item::before {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.07) 100%);
+}
+
+[data-theme="light"] .sidebar-theme-btn:hover:not(.sidebar-theme-btn-active) {
+  background: rgba(139, 92, 246, 0.08);
+  color: var(--t2);
+}
+
+[data-theme="light"] .sidebar-theme-icon-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #7c3aed;
+}
+
+[data-theme="light"] .sidebar-user-profile:hover {
+  background: rgba(139, 92, 246, 0.07);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .sidebar-nav-section::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.25);
+}
+
+[data-theme="light"] .sidebar-nav-section::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+/* ── Sidebar CSS Variables per theme ────────────────────────────── */
+:root {
+  --sidebar-bg:     rgba(12, 14, 22, 0.85);
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+  --sidebar-btn-bg: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] {
+  --sidebar-bg:     rgba(255, 255, 255, 0.88);
+  --sidebar-border: rgba(139, 92, 246, 0.12);
+  --sidebar-shadow: 4px 0 24px rgba(100, 80, 180, 0.1);
+  --sidebar-btn-bg: rgba(139, 92, 246, 0.06);
+}
