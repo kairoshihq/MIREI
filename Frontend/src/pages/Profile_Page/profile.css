@@ -187,3 +187,47 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Light Theme Overrides ──────────────────────────────────────── */
+[data-theme="light"] .profile-hero-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  box-shadow: 0 4px 20px rgba(100, 80, 180, 0.08);
+}
+
+[data-theme="light"] .profile-avatar-status {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="light"] .profile-act-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 2px 10px rgba(100, 80, 180, 0.07);
+}
+
+[data-theme="light"] .profile-setting-row {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .profile-setting-row:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 2px 10px rgba(100, 80, 180, 0.08);
+}
+
+[data-theme="light"] .profile-setting-row-danger {
+  background: rgba(254, 242, 242, 0.7);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+[data-theme="light"] .profile-setting-row-danger:hover {
+  background: rgba(254, 242, 242, 0.95);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="light"] .profile-edit-input,
+[data-theme="light"] .profile-edit-input-bio {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(139, 92, 246, 0.35);
+}

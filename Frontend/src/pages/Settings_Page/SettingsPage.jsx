@@ -4,7 +4,7 @@ import { useApp } from '../../App';
 import { Toggle, Select } from '../../components/common/Input';
 import { ConfirmModal } from '../../components/common/Modal';
 import { ToastContainer, useToast } from '../../components/common/Toast';
-import { BellIcon, LockIcon, TrashIcon, PaletteIcon, GlobeIcon, AlertIcon } from '../../components/common/Icon';
+import { BellIcon, LockIcon, TrashIcon, PaletteIcon, GlobeIcon, AlertIcon, DownloadIcon, DatabaseIcon } from '../../components/common/Icon';
 import './settings.css';
 
 const SettingsPage = () => {
@@ -20,8 +20,12 @@ const SettingsPage = () => {
     animations: true,
     language: 'id',
     fontSize: 'medium',
+    autoDeleteEnabled: false,
+    autoDeletePeriod: '7',
   });
 
+  const [deleteSpecificModal, setDeleteSpecificModal] = useState(false);
+  const [deleteSpecificType, setDeleteSpecificType] = useState('chat');
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: null });
 
   const set = (key, val) => setSettings(s => ({ ...s, [key]: val }));
@@ -32,6 +36,19 @@ const SettingsPage = () => {
 
   const handleDeleteAccount = () => {
     setConfirmModal({ isOpen: true, type: 'deleteAccount' });
+  };
+
+  const handleExportData = () => {
+    // Simulate export — in production this would call an API
+    toast.success('Data sedang disiapkan, akan segera diunduh');
+    console.log('Export all user data');
+  };
+
+  const handleDeleteSpecific = () => {
+    const label = deleteSpecificType === 'chat' ? 'riwayat chat' : 'data aktivitas';
+    toast.success(`${label.charAt(0).toUpperCase() + label.slice(1)} berhasil dihapus`);
+    setDeleteSpecificModal(false);
+    console.log('Delete specific data:', deleteSpecificType);
   };
 
   const handleConfirm = () => {
@@ -167,8 +184,102 @@ const SettingsPage = () => {
           </div>
         ))}
 
+        {/* Data Control */}
+        <div className="settings-section-card" style={{ animationDelay:'0.28s' }}>
+          <div className="settings-section-head">
+            <span className="settings-section-icon"><DatabaseIcon size={18} /></span>
+            <span className="settings-section-title">Kontrol Data</span>
+          </div>
+
+          {/* Export */}
+          <div className="settings-row">
+            <div className="flex-1">
+              <div className="settings-label">Ekspor Semua Data</div>
+              <div className="settings-sub">Unduh semua riwayat chat dan aktivitasmu dalam format JSON</div>
+            </div>
+            <button className="settings-data-btn" onClick={handleExportData}>
+              <DownloadIcon size={14} />
+              <span>Ekspor</span>
+            </button>
+          </div>
+
+          {/* Delete Specific */}
+          <div className="settings-row settings-row-border">
+            <div className="flex-1">
+              <div className="settings-label">Hapus Data Tertentu</div>
+              <div className="settings-sub">Pilih dan hapus sebagian data tanpa menghapus semuanya</div>
+            </div>
+            <button
+              className="settings-data-btn settings-data-btn-warn"
+              onClick={() => setDeleteSpecificModal(true)}
+            >
+              <TrashIcon size={14} />
+              <span>Pilih Data</span>
+            </button>
+          </div>
+
+          {/* Auto Delete */}
+          <div className="settings-row settings-row-border" style={{ flexWrap:'wrap', gap:'12px' }}>
+            <div className="flex-1" style={{ minWidth:'160px' }}>
+              <div className="settings-label">Hapus Otomatis</div>
+              <div className="settings-sub">Hapus data lama secara otomatis setelah periode tertentu</div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'10px', flexShrink:0 }}>
+              {settings.autoDeleteEnabled && (
+                <Select
+                  value={settings.autoDeletePeriod}
+                  onChange={e => set('autoDeletePeriod', e.target.value)}
+                  options={[
+                    { value: '7',  label: '1 Minggu' },
+                    { value: '14', label: '2 Minggu' },
+                    { value: '30', label: '1 Bulan' },
+                    { value: '90', label: '3 Bulan' },
+                  ]}
+                />
+              )}
+              <Toggle
+                value={settings.autoDeleteEnabled}
+                onChange={v => {
+                  set('autoDeleteEnabled', v);
+                  if (v) toast.success(`Hapus otomatis aktif — data lebih dari ${settings.autoDeletePeriod === '7' ? '1 minggu' : settings.autoDeletePeriod + ' hari'} akan dihapus`);
+                  else toast.success('Hapus otomatis dinonaktifkan');
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Delete Specific Modal */}
+        {deleteSpecificModal && (
+          <div className="settings-modal-overlay" onClick={() => setDeleteSpecificModal(false)}>
+            <div className="settings-modal" onClick={e => e.stopPropagation()}>
+              <div className="settings-modal-title">Hapus Data Tertentu</div>
+              <div className="settings-modal-sub">Pilih jenis data yang ingin dihapus</div>
+              <div className="settings-modal-options">
+                {[
+                  { value: 'chat',     label: 'Riwayat Chat',    desc: 'Semua percakapan dengan Mirei' },
+                  { value: 'activity', label: 'Log Aktivitas',   desc: 'Riwayat aktivitas dan sesi login' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    className={`settings-modal-option ${deleteSpecificType === opt.value ? 'settings-modal-option-active' : ''}`}
+                    onClick={() => setDeleteSpecificType(opt.value)}
+                  >
+                    <div className="settings-modal-option-label">{opt.label}</div>
+                    <div className="settings-modal-option-desc">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+              <div className="settings-modal-actions">
+                <button className="settings-modal-cancel" onClick={() => setDeleteSpecificModal(false)}>Batal</button>
+                <button className="settings-modal-confirm" onClick={handleDeleteSpecific}>Hapus</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Danger zone */}
-        <div className="settings-section-card" style={{ borderColor:'rgba(239,68,68,0.2)', animationDelay:'0.28s' }}>
+        <div className="settings-section-card" style={{ borderColor:'rgba(239,68,68,0.2)', animationDelay:'0.35s' }}>
           <div className="settings-section-head">
             <span className="settings-section-icon"><AlertIcon size={18} /></span>
             <span className="settings-section-title settings-section-title-danger">Zona Berbahaya</span>
