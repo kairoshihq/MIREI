@@ -1,0 +1,233 @@
+/* ProfilePage Styles */
+
+.profile-page-wrap {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  height: 100%;
+  min-height: 0;
+  padding: 48px 36px 80px;
+  box-sizing: border-box;
+}
+
+/* Hero Card */
+.profile-hero-card {
+  @apply relative rounded-[20px] overflow-hidden;
+  padding: 48px 32px;
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  animation: slideUp 0.4s ease;
+  display: flex;
+  align-items: center;
+  min-height: 180px;
+}
+
+.profile-hero-bg {
+  @apply absolute pointer-events-none rounded-full;
+  top: -60px;
+  right: -60px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent 70%);
+}
+
+.profile-avatar-wrap {
+  @apply relative inline-block;
+}
+
+.profile-big-avatar {
+  @apply w-[72px] h-[72px] rounded-full flex items-center justify-center text-[28px] font-bold text-white;
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.4);
+  border: 3px solid rgba(139, 92, 246, 0.4);
+}
+
+.profile-avatar-status {
+  @apply absolute bottom-[2px] right-[2px] w-[14px] h-[14px] rounded-full;
+  background: #10b981;
+  border: 2px solid rgba(12, 14, 22, 0.8);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.profile-name {
+  @apply text-[22px] font-bold;
+  color: var(--t1);
+}
+
+.profile-edit-input {
+  @apply rounded-lg text-[22px] font-bold outline-none;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  font-family: 'Sora', sans-serif;
+  color: var(--t1);
+}
+
+.profile-edit-input-bio {
+  @apply rounded-lg text-[13px] outline-none w-full max-w-[320px];
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  font-family: 'Sora', sans-serif;
+  color: var(--t1);
+}
+
+.profile-edit-btn {
+  @apply rounded-[10px] text-[13px] font-medium cursor-pointer;
+  padding: 9px 18px;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.12);
+  color: #a78bfa;
+  font-family: 'Sora', sans-serif;
+  transition: all 0.15s ease;
+}
+
+.profile-edit-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.profile-badge {
+  @apply text-[12px] rounded-full border font-medium;
+  padding: 4px 12px;
+}
+
+/* Activity Stats */
+.profile-section-title {
+  @apply text-[15px] font-semibold mb-[14px];
+  color: var(--t1);
+}
+
+.profile-activity-grid {
+  @apply grid gap-3;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.profile-act-card {
+  @apply rounded-[14px] text-center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  animation: slideUp 0.4s ease both;
+}
+
+.profile-act-icon {
+  @apply text-[22px] mb-2;
+}
+
+.profile-act-value {
+  @apply text-2xl font-bold mb-[2px];
+  color: var(--t1);
+}
+
+.profile-act-label {
+  @apply text-[12px];
+  color: var(--t3);
+}
+
+/* Settings Row */
+.profile-setting-row {
+  @apply flex items-center gap-[14px] rounded-xl cursor-pointer w-full;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  font-family: 'Sora', sans-serif;
+  transition: all 0.15s ease;
+}
+
+.profile-setting-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-setting-row-danger {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.profile-setting-row-danger:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.profile-setting-icon {
+  @apply text-lg;
+}
+
+.profile-setting-label {
+  @apply text-[13.5px] font-medium;
+  color: var(--t1);
+}
+
+.profile-setting-label-danger {
+  color: #ef4444;
+}
+
+.profile-setting-sub {
+  @apply text-[11.5px] mt-[1px];
+  color: var(--t3);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .profile-activity-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page-wrap {
+    padding: 24px 20px;
+  }
+  
+  .profile-activity-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Light Theme Overrides ──────────────────────────────────────── */
+[data-theme="light"] .profile-hero-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  box-shadow: 0 4px 20px rgba(100, 80, 180, 0.08);
+}
+
+[data-theme="light"] .profile-avatar-status {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="light"] .profile-act-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 2px 10px rgba(100, 80, 180, 0.07);
+}
+
+[data-theme="light"] .profile-setting-row {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .profile-setting-row:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 2px 10px rgba(100, 80, 180, 0.08);
+}
+
+[data-theme="light"] .profile-setting-row-danger {
+  background: rgba(254, 242, 242, 0.7);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+[data-theme="light"] .profile-setting-row-danger:hover {
+  background: rgba(254, 242, 242, 0.95);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="light"] .profile-edit-input,
+[data-theme="light"] .profile-edit-input-bio {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(139, 92, 246, 0.35);
+}

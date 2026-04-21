@@ -1,0 +1,529 @@
+/* CharactersPage (Mirei Profile) Styles */
+
+.characters-page-wrap {
+  @apply overflow-y-auto flex flex-col gap-6;
+  height: 100%;
+  min-height: 0;
+  padding: 32px 36px;
+}
+
+/* Header */
+.mirei-profile-header {
+  @apply flex items-end justify-between;
+  animation: slideUp 0.35s ease;
+}
+
+.characters-page-title {
+  @apply text-2xl font-bold mb-1;
+  color: var(--t1);
+}
+
+.characters-page-sub {
+  @apply text-[13px];
+  color: var(--t3);
+}
+
+/* Main Grid Layout */
+.mirei-profile-grid {
+  @apply grid gap-6;
+  grid-template-columns: 380px 1fr;
+  grid-template-rows: auto;
+  align-items: start;
+  animation: slideUp 0.4s ease;
+}
+
+/* ========== LEFT COLUMN - LIVE2D SECTION ========== */
+
+.mirei-live2d-section {
+  @apply flex flex-col gap-4;
+}
+
+.mirei-live2d-container {
+  @apply flex flex-col gap-4;
+}
+
+/* Live2D Canvas */
+.mirei-live2d-canvas {
+  @apply rounded-2xl relative overflow-hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.mirei-live2d-placeholder {
+  @apply relative flex items-center justify-center;
+  width: 100%;
+  height: 300px;
+}
+
+.mirei-avatar-large {
+  @apply relative z-10 rounded-full flex items-center justify-center;
+  width: 160px;
+  height: 160px;
+  background: linear-gradient(135deg, #1e1f2e, #2a1f3d);
+  border: 3px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+}
+
+.mirei-live2d-rings {
+  @apply absolute inset-0 flex items-center justify-center;
+}
+
+.mirei-live2d-ring {
+  @apply absolute rounded-full;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  animation: liveRingPulse 3s infinite ease-in-out;
+}
+
+@keyframes liveRingPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+.mirei-live2d-label {
+  @apply flex items-center gap-2 mt-6;
+  font-size: 12px;
+  color: var(--t3);
+}
+
+.mirei-live2d-status {
+  @apply w-2 h-2 rounded-full;
+  background: #a78bfa;
+  animation: livePulseDot 2s infinite;
+}
+
+@keyframes livePulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+.mirei-live2d-sublabel {
+  @apply ml-2 px-2 py-0.5 rounded text-[10px] font-medium;
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Quick Info Card */
+.mirei-quick-info {
+  @apply rounded-2xl p-5;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mirei-quick-info-header {
+  @apply flex items-center gap-3 pb-4 mb-4;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-quick-name {
+  @apply text-lg font-bold;
+  color: var(--t1);
+}
+
+.mirei-quick-tag {
+  @apply text-xs;
+  color: var(--t3);
+}
+
+.mirei-quick-stats {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.mirei-quick-stat {
+  @apply flex items-center gap-3 p-3 rounded-xl;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mirei-quick-stat-icon {
+  @apply text-2xl;
+}
+
+.mirei-quick-stat-value {
+  @apply text-lg font-bold;
+  color: var(--t1);
+}
+
+.mirei-quick-stat-label {
+  @apply text-[10px];
+  color: var(--t3);
+}
+
+/* ========== RIGHT COLUMN - INFO SECTION ========== */
+
+.mirei-info-section {
+  @apply flex flex-col gap-4;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Tabs */
+.mirei-tabs {
+  @apply flex gap-2 p-1 rounded-xl;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-tab {
+  @apply flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg cursor-pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Sora', sans-serif;
+  color: var(--t3);
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.mirei-tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t2);
+}
+
+.mirei-tab-active {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* Tab Content */
+.mirei-tab-content {
+  @apply rounded-2xl p-6;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mirei-tab-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mirei-tab-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mirei-tab-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+
+.mirei-tab-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+.mirei-content-section {
+  @apply flex flex-col gap-5;
+}
+
+.mirei-content-title {
+  @apply text-xl font-bold mb-2;
+  color: var(--t1);
+}
+
+/* ========== BIODATA TAB ========== */
+
+.mirei-bio-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.mirei-bio-item {
+  @apply flex items-start gap-3 p-4 rounded-xl;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-bio-icon {
+  @apply text-2xl flex-shrink-0;
+}
+
+.mirei-bio-label {
+  @apply text-xs font-medium mb-1;
+  color: var(--t3);
+}
+
+.mirei-bio-value {
+  @apply text-sm font-semibold;
+  color: var(--t1);
+}
+
+.mirei-motto-card {
+  @apply flex items-start gap-4 p-5 rounded-xl;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.mirei-motto-icon {
+  @apply text-3xl flex-shrink-0;
+}
+
+.mirei-motto-label {
+  @apply text-xs font-semibold mb-2;
+  color: #a78bfa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mirei-motto-text {
+  @apply text-base font-medium leading-relaxed;
+  color: var(--t1);
+}
+
+.mirei-personality-badge {
+  @apply flex items-center gap-2 p-4 rounded-xl;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-personality-text {
+  @apply text-sm font-semibold;
+  color: #a78bfa;
+}
+
+/* ========== BACKGROUND TAB ========== */
+
+.mirei-story-card {
+  @apply flex items-start gap-4 p-5 rounded-xl;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-story-icon {
+  @apply text-3xl flex-shrink-0;
+}
+
+.mirei-story-title {
+  @apply text-base font-semibold mb-3;
+  color: var(--t1);
+}
+
+.mirei-story-text {
+  @apply text-sm leading-relaxed;
+  color: var(--t2);
+  line-height: 1.7;
+}
+
+.mirei-specialties-card {
+  @apply p-5 rounded-xl;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.08));
+  border: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.mirei-specialties-title {
+  @apply flex items-center gap-2 text-base font-semibold mb-4;
+  color: var(--t1);
+}
+
+.mirei-specialties-list {
+  @apply flex flex-col gap-3;
+}
+
+.mirei-specialty-item {
+  @apply flex items-start gap-3 text-sm;
+  color: var(--t2);
+}
+
+.mirei-specialty-bullet {
+  @apply w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+}
+
+/* ========== PERSONALITY TAB ========== */
+
+.mirei-traits-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.mirei-trait-card {
+  @apply p-4 rounded-xl text-center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
+  animation: slideUp 0.4s ease both;
+}
+
+.mirei-trait-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.mirei-trait-icon {
+  @apply text-3xl mb-3;
+}
+
+.mirei-trait-title {
+  @apply text-sm font-semibold mb-2;
+  color: var(--t1);
+}
+
+.mirei-trait-desc {
+  @apply text-xs leading-relaxed;
+  color: var(--t3);
+}
+
+.mirei-communication-card {
+  @apply p-5 rounded-xl;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-communication-title {
+  @apply flex items-center gap-2 text-base font-semibold mb-4;
+  color: var(--t1);
+}
+
+.mirei-communication-list {
+  @apply flex flex-col gap-3;
+}
+
+.mirei-communication-item {
+  @apply flex items-start gap-3 text-sm;
+  color: var(--t2);
+}
+
+.mirei-communication-bullet {
+  @apply w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5;
+  background: #a78bfa;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+@media (max-width: 1200px) {
+  .mirei-profile-grid {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mirei-profile-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mirei-live2d-section {
+    order: 2;
+  }
+  
+  .mirei-info-section {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .characters-page-wrap {
+    padding: 24px 20px;
+  }
+  
+  .mirei-bio-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mirei-traits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mirei-tabs {
+    flex-direction: column;
+  }
+  
+  .mirei-tab {
+    justify-content: flex-start;
+  }
+  
+  .mirei-quick-stats {
+    grid-cols: 1fr;
+  }
+}
+
+/* ========== ANIMATIONS ========== */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== CUSTOMIZATION SECTION ========== */
+
+.mirei-custom-section {
+  @apply flex flex-col gap-4;
+  animation: slideUp 0.5s ease;
+}
+
+.mirei-custom-header {
+  @apply mb-1;
+}
+
+.mirei-custom-title {
+  @apply text-lg font-bold mb-1;
+  color: var(--t1);
+}
+
+.mirei-custom-sub {
+  @apply text-xs;
+  color: var(--t3);
+}
+
+/* Tabs - sama seperti mirei-tabs */
+.mirei-custom-tabs {
+  @apply flex gap-2 p-1 rounded-xl;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mirei-custom-tab {
+  @apply flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg cursor-pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Sora', sans-serif;
+  color: var(--t3);
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.mirei-custom-tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t2);
+}
+
+.mirei-custom-tab-active {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* Content container - sama seperti mirei-tab-content */
+.mirei-custom-content {
+  @apply rounded-2xl p-6;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 200px;
+}
+
+

@@ -1,0 +1,194 @@
+/* components/common/Input/Input.css */
+
+.common-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  color: var(--t1);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 8px 14px;
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  width: 100%;
+}
+.common-input::placeholder { color: var(--t3); }
+.common-input:focus {
+  border-color: rgba(139,92,246,0.5);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+}
+.common-input:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Custom Select ──────────────────────────────────────────────── */
+.custom-select-wrap {
+  position: relative;
+  display: inline-block;
+  min-width: 140px;
+  font-family: 'Sora', sans-serif;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--t2);
+  font-size: 12.5px;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.custom-select-trigger:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+.custom-select-trigger-open {
+  border-color: rgba(139, 92, 246, 0.55);
+  background: rgba(139, 92, 246, 0.08);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  color: var(--t1);
+}
+
+.custom-select-value {
+  flex: 1;
+  text-align: left;
+}
+
+.custom-select-chevron {
+  color: var(--t3);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-select-chevron-open {
+  transform: rotate(180deg);
+  color: #a78bfa;
+}
+
+/* Dropdown panel */
+.custom-select-dropdown {
+  background: rgba(16, 18, 30, 0.97);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 200;
+  animation: selectDropIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes selectDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Option item */
+.custom-select-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--t2);
+  font-size: 12.5px;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.custom-select-option:hover {
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--t1);
+}
+
+.custom-select-option-active {
+  background: rgba(139, 92, 246, 0.18);
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+.custom-select-option-active:hover {
+  background: rgba(139, 92, 246, 0.25);
+}
+
+/* ── Light Theme Overrides ──────────────────────────────────────── */
+[data-theme="light"] .custom-select-trigger {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: var(--t2);
+}
+
+[data-theme="light"] .custom-select-trigger:hover {
+  background: #fff;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+[data-theme="light"] .custom-select-trigger-open {
+  background: #fff;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .custom-select-dropdown {
+  background: rgba(255, 255, 255, 0.99);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow:
+    0 8px 32px rgba(100, 80, 180, 0.15),
+    0 0 0 1px rgba(139, 92, 246, 0.05);
+}
+
+[data-theme="light"] .custom-select-option {
+  color: var(--t2);
+}
+
+[data-theme="light"] .custom-select-option:hover {
+  background: rgba(139, 92, 246, 0.07);
+  color: var(--t1);
+}
+
+[data-theme="light"] .custom-select-option-active {
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+}
+
+[data-theme="light"] .custom-select-option-active:hover {
+  background: rgba(139, 92, 246, 0.15);
+}
+
+[data-theme="light"] .common-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: var(--t1);
+}
+
+[data-theme="light"] .common-input::placeholder {
+  color: var(--t3);
+}
+
+[data-theme="light"] .common-input:focus {
+  background: #fff;
+  border-color: rgba(139, 92, 246, 0.5);
+}

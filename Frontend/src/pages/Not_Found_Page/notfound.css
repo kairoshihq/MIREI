@@ -1,0 +1,65 @@
+/* NotFoundPage Styles */
+
+.notfound-wrap {
+  @apply h-full flex items-center justify-center relative overflow-hidden;
+}
+
+.notfound-orb {
+  @apply absolute rounded-full pointer-events-none;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent 70%);
+}
+
+.notfound-content {
+  @apply text-center relative z-[1];
+  animation: slideUp 0.5s ease;
+}
+
+.notfound-big-num {
+  @apply text-[120px] font-bold leading-none mb-4;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.notfound-title {
+  @apply text-[22px] font-semibold mb-3;
+  color: var(--t1);
+}
+
+.notfound-sub {
+  @apply text-[14px] mb-7 max-w-[320px];
+  color: var(--t2);
+}
+
+.notfound-home-btn {
+  @apply rounded-full border-none text-white text-[14px] font-semibold cursor-pointer;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  font-family: 'Sora', sans-serif;
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
+  transition: all 0.2s ease;
+}
+
+.notfound-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notfound-big-num {
+    font-size: 80px;
+  }
+  
+  .notfound-title {
+    font-size: 18px;
+  }
+  
+  .notfound-orb {
+    width: 300px;
+    height: 300px;
+  }
+}

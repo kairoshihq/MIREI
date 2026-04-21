@@ -2,37 +2,23 @@
   "name": "mirei",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "backend",
-    "frontend",
-    "ai-core"
-  ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm start",
-    "build": "npm run build:backend && npm run build:frontend",
-    "build:backend": "cd backend && npm run build",
-    "build:frontend": "cd frontend && npm run build",
-    "test": "npm run test:backend && npm run test:frontend && npm run test:ai-core",
-    "test:backend": "cd backend && npm test",
-    "test:frontend": "cd frontend && npm test",
-    "test:ai-core": "cd ai-core && npm test",
-    "phase:alpha": "cp config/phases/alpha.config.js config/phase.js && echo 'Switched to Alpha phase'",
-    "phase:beta": "cp config/phases/beta.config.js config/phase.js && echo 'Switched to Beta phase'",
-    "phase:nexus": "cp config/phases/nexus.config.js config/phase.js && echo 'Switched to Nexus phase'",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "clean": "rm -rf node_modules backend/node_modules frontend/node_modules ai-core/node_modules",
-    "setup": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../ai-core && npm install"
+    "dev": "cd backend && npm run dev",
+    "install:backend": "cd backend && npm install",
+    "clean": "rm -rf backend/node_modules"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "openai": "^6.34.0",
+    "sqlite3": "^6.0.1"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0",
-    "prettier": "^3.0.0",
-    "eslint": "^8.55.0"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "nodemon": "^3.1.14"
   }
 }

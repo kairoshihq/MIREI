@@ -1,0 +1,165 @@
+/* ========== VOICE SECTION ========== */
+
+.voice-section {
+  @apply w-full;
+}
+
+.voice-layout {
+  @apply grid gap-6;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+}
+
+/* Left / Right columns */
+.voice-options-col {
+  @apply flex flex-col gap-3;
+}
+
+.voice-col-label {
+  @apply text-xs font-semibold uppercase tracking-widest mb-1;
+  color: var(--t3);
+  letter-spacing: 0.08em;
+}
+
+.voice-options-list {
+  @apply flex flex-col gap-2;
+}
+
+.voice-option-btn {
+  @apply flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Sora', sans-serif;
+}
+
+.voice-option-btn:hover {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.25);
+}
+
+.voice-option-btn-active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(236, 72, 153, 0.12));
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.12);
+}
+
+.voice-option-dot {
+  @apply w-2 h-2 rounded-full flex-shrink-0;
+  background: rgba(139, 92, 246, 0.3);
+  border: 1.5px solid rgba(139, 92, 246, 0.5);
+  transition: all 0.2s ease;
+}
+
+.voice-option-btn-active .voice-option-dot {
+  background: #a78bfa;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
+}
+
+.voice-option-flag {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.voice-option-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.voice-option-desc {
+  font-size: 11px;
+  color: var(--t3);
+  margin-top: 1px;
+}
+
+/* Center column */
+.voice-center-col {
+  @apply flex flex-col items-center gap-4;
+  width: 140px;
+}
+
+.voice-mic-wrap {
+  @apply relative flex items-center justify-center;
+  width: 90px;
+  height: 90px;
+}
+
+.voice-mic-icon {
+  @apply flex items-center justify-center rounded-full;
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(236, 72, 153, 0.15));
+  border: 1.5px solid rgba(139, 92, 246, 0.4);
+  color: #a78bfa;
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.voice-mic-ring {
+  @apply absolute inset-0 rounded-full;
+  border: 1.5px solid rgba(139, 92, 246, 0.5);
+  animation: voiceRingPulse 1.2s ease-out infinite;
+}
+
+@keyframes voiceRingPulse {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* Waveform */
+.voice-waveform {
+  @apply flex items-center gap-[3px];
+  height: 90px;
+  width: 90px;
+  justify-content: center;
+}
+
+.voice-waveform-bar {
+  width: 3px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, #ec4899, #8b5cf6);
+  height: 6px;
+  transition: height 0.1s ease;
+}
+
+.voice-waveform-bar-active {
+  animation: waveBarBounce 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes waveBarBounce {
+  0%   { height: 4px;  opacity: 0.5; }
+  100% { height: 52px; opacity: 1; }
+}
+
+/* Check button */
+.voice-check-btn {
+  @apply px-6 py-2 rounded-xl font-semibold;
+  font-size: 13px;
+  font-family: 'Sora', sans-serif;
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.voice-check-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+.voice-check-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.voice-center-hint {
+  font-size: 11px;
+  color: var(--t3);
+  text-align: center;
+  line-height: 1.4;
+}

@@ -1,0 +1,370 @@
+/* SettingsPage Styles */
+
+.settings-page-wrap {
+  @apply overflow-y-auto flex flex-col gap-6;
+  height: 100%;
+  min-height: 0;
+  padding: 32px 36px;
+}
+
+.settings-page-title {
+  @apply text-2xl font-bold mb-1;
+  color: var(--t1);
+}
+
+.settings-page-sub {
+  @apply text-[13px];
+  color: var(--t3);
+}
+
+/* Section Card */
+.settings-section-card {
+  @apply rounded-2xl overflow-hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.4s ease both;
+}
+
+.settings-section-head {
+  @apply flex items-center gap-[10px];
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-section-icon {
+  @apply text-lg;
+}
+
+.settings-section-title {
+  @apply text-[14px] font-semibold;
+  color: var(--t1);
+}
+
+.settings-section-title-danger {
+  color: #ef4444;
+}
+
+/* Setting Row */
+.settings-row {
+  @apply flex items-center gap-4;
+  padding: 14px 20px;
+}
+
+.settings-row-border {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-label {
+  @apply text-[13.5px] font-medium mb-[2px];
+  color: var(--t1);
+}
+
+.settings-sub {
+  @apply text-[11.5px];
+  color: var(--t3);
+}
+
+/* Toggle Switch */
+.settings-toggle {
+  @apply w-[42px] h-6 rounded-full border-none cursor-pointer relative flex-shrink-0;
+  transition: all 0.25s ease;
+}
+
+.settings-toggle-active {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+.settings-toggle-inactive {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-toggle-knob {
+  @apply w-[18px] h-[18px] rounded-full bg-white absolute top-[3px];
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: left 0.25s ease;
+}
+
+.settings-toggle-knob-active {
+  left: 21px;
+}
+
+.settings-toggle-knob-inactive {
+  left: 3px;
+}
+
+/* Select */
+.settings-select {
+  @apply rounded-lg text-[12.5px] outline-none cursor-pointer;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Sora', sans-serif;
+  color: var(--t2);
+}
+
+.settings-select:focus {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Danger Zone */
+.settings-danger-btn {
+  @apply rounded-[10px] text-[13px] cursor-pointer text-left;
+  padding: 11px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t2);
+  font-family: 'Sora', sans-serif;
+  transition: all 0.15s ease;
+}
+
+.settings-danger-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.settings-danger-btn-critical {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.settings-danger-btn-critical:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+/* Info Row */
+.settings-info-row {
+  @apply flex justify-between;
+  padding: 4px 0 16px;
+}
+
+.settings-info-text {
+  @apply text-[12px];
+  color: var(--t3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-page-wrap {
+    padding: 24px 20px;
+  }
+  
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── Data Control ─────────────────────────────────────────────── */
+.settings-data-btn {
+  @apply flex items-center gap-[6px] rounded-[8px] text-[12.5px] cursor-pointer flex-shrink-0;
+  padding: 8px 14px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.1);
+  color: #a78bfa;
+  font-family: 'Sora', sans-serif;
+  transition: all 0.15s ease;
+}
+
+.settings-data-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.55);
+}
+
+.settings-data-btn-warn {
+  border-color: rgba(251, 146, 60, 0.35);
+  background: rgba(251, 146, 60, 0.08);
+  color: #fb923c;
+}
+
+.settings-data-btn-warn:hover {
+  background: rgba(251, 146, 60, 0.18);
+  border-color: rgba(251, 146, 60, 0.55);
+}
+
+/* Delete Specific Modal */
+.settings-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.15s ease both;
+}
+
+.settings-modal {
+  background: rgba(18, 20, 32, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.2s ease both;
+}
+
+.settings-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 4px;
+}
+
+.settings-modal-sub {
+  font-size: 12px;
+  color: var(--t3);
+  margin-bottom: 16px;
+}
+
+.settings-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.settings-modal-option {
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: 'Sora', sans-serif;
+}
+
+.settings-modal-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.settings-modal-option-active {
+  background: rgba(251, 146, 60, 0.1);
+  border-color: rgba(251, 146, 60, 0.4);
+}
+
+.settings-modal-option-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+
+.settings-modal-option-desc {
+  font-size: 11.5px;
+  color: var(--t3);
+}
+
+.settings-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.settings-modal-cancel {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--t2);
+  font-size: 13px;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settings-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.settings-modal-confirm {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(251, 146, 60, 0.4);
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settings-modal-confirm:hover {
+  background: rgba(251, 146, 60, 0.25);
+  border-color: rgba(251, 146, 60, 0.6);
+}
+
+@media (max-width: 768px) {
+  .settings-modal {
+    margin: 0 16px;
+  }
+
+  .settings-row {
+    flex-wrap: wrap;
+  }
+}
+
+/* ── Light Theme Overrides ──────────────────────────────────────── */
+[data-theme="light"] .settings-section-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 2px 12px rgba(100, 80, 180, 0.07);
+}
+
+[data-theme="light"] .settings-section-head {
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .settings-row-border {
+  border-top: 1px solid rgba(139, 92, 246, 0.08);
+}
+
+[data-theme="light"] .settings-toggle-inactive {
+  background: rgba(139, 92, 246, 0.15);
+}
+
+[data-theme="light"] .settings-danger-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--t2);
+}
+
+[data-theme="light"] .settings-danger-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .settings-modal {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  box-shadow: 0 24px 60px rgba(100, 80, 180, 0.2);
+}
+
+[data-theme="light"] .settings-modal-option {
+  background: rgba(139, 92, 246, 0.04);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .settings-modal-option:hover {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+[data-theme="light"] .settings-modal-cancel {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--t2);
+}
+
+[data-theme="light"] .settings-modal-cancel:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
